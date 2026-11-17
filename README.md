@@ -2,17 +2,7 @@
 
 When a flight is delayed or a train is cancelled, airlines and railways only manage their own leg of the journey. Nobody works out what it means for the connecting transfer, the hotel check-in or the rest of the trip. ReMode treats a traveler's whole itinerary as one connected graph, detects disruptions, calculates the downstream impact, and proposes ranked, explainable recovery plans that the traveler confirms before anything changes.
 
-Built by Team TechDynasty for **HackCelestial 3.0**.
 
-<img width="1897" height="910" alt="image" src="https://github.com/user-attachments/assets/ca62d4c1-6cf0-4733-8e5c-a2da788027a6" />
-<img width="1892" height="910" alt="image" src="https://github.com/user-attachments/assets/cbd4c36a-5610-4735-9f1f-2560323312a0" />
-<img width="1897" height="908" alt="image" src="https://github.com/user-attachments/assets/2f87f377-e341-45e1-ab6b-aba34a123a40" />
-<img width="1900" height="907" alt="image" src="https://github.com/user-attachments/assets/68f331ec-8fa8-4c08-a544-38fedaeb023d" />
-<img width="1901" height="906" alt="image" src="https://github.com/user-attachments/assets/d4997bf0-9093-4c0c-93b5-d5c3ac0ce8e5" />
-<img width="1901" height="907" alt="image" src="https://github.com/user-attachments/assets/f37b41f0-e8a5-4fd9-86b3-b0c28f94a533" />
-<img width="1901" height="910" alt="image" src="https://github.com/user-attachments/assets/d3f59c19-eb24-498e-ba7f-9ca5f29490da" />
-<img width="1897" height="905" alt="image" src="https://github.com/user-attachments/assets/06f210f6-5355-4ebd-9e88-f7a9effecc38" />
-<img width="1896" height="911" alt="image" src="https://github.com/user-attachments/assets/8a9f80c2-ea96-4073-9dcd-3e33506f15ce" />
 
 
 ---
