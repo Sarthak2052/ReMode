@@ -18,7 +18,7 @@ When a flight is delayed or a train is cancelled, airlines and railways only man
 - [Project Structure](#project-structure)
 - [Dataset](#dataset)
 - [Limitations and Roadmap](#limitations-and-roadmap)
-- [Team](#team)
+
 
 ---
 
