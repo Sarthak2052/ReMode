@@ -1,0 +1,86 @@
+.dock-outer {
+  position: relative;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: max-content;
+  height: 44px;
+  overflow: visible;
+}
+
+.dock-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  height: 44px;
+}
+
+.dock-item {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background-color: transparent;
+  border: 1.5px solid rgba(79, 168, 248, 0.35);
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0F1B2B;
+  cursor: pointer;
+  outline: none;
+  transform-origin: center center;
+  will-change: transform;
+  transform: translateZ(0);
+  transition:
+    color 0.15s cubic-bezier(0.2, 0, 0.2, 1),
+    background-color 0.15s cubic-bezier(0.2, 0, 0.2, 1),
+    border-color 0.15s cubic-bezier(0.2, 0, 0.2, 1),
+    box-shadow 0.15s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.dock-item:hover,
+.dock-item:focus-visible {
+  background-color: rgba(79, 168, 248, 0.12);
+  border-color: #1C6FD9;
+  color: #1C6FD9;
+  box-shadow: 0 4px 12px rgba(28, 111, 217, 0.2);
+}
+
+.dock-item.active {
+  background-color: rgba(28, 111, 217, 0.08);
+  border-color: #1C6FD9;
+  color: #1C6FD9;
+}
+
+.dock-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.dock-label {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: fit-content;
+  white-space: pre;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(79, 168, 248, 0.3);
+  background-color: #0F1B2B;
+  padding: 0.25rem 0.65rem;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  transform: translateX(-50%);
+  box-shadow: 0 8px 20px rgba(15, 27, 43, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+  z-index: 60;
+}

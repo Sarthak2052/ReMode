@@ -1,0 +1,52 @@
+column_name,tier,applies_to_booking_types,description,null_count,null_pct,example_value
+record_id,Structural — ID,All,"Unique row identifier, prefixed by mode (BUS_/TRN_/FLT_/HTL_/ACT_).",0,0.0,BUS_000000
+booking_type,Structural — category,All,"Human-readable resource category: Bus, Train, Flight, Hotel, Activity.",0,0.0,Bus
+mode,Structural — category,All,"Same as booking_type, upper-cased, for programmatic joins with the engine's TransportMode enum.",0,0.0,BUS
+source_city,Real — direct,"Bus, Train, Flight","Origin city, as given in the source dataset. Null for Hotel/Activity (location-only resources, no origin).",610,4.0,Aattur
+destination_city,Real — direct,All,Destination / location city.,0,0.0,Chennai
+state,Real — direct (partial),All,"Indian state, from a static ~150-city lookup table. Null for cities not in that table (mostly smaller bus-route towns).",7191,47.3,Uttar Pradesh
+distance_km,Real + derived,"Bus, Train, Flight","Haversine distance, computed only where BOTH cities are in the ~35-city static coordinate table. Null otherwise — not estimated, left honestly blank.",10787,70.9,191.7
+operator,Real — direct,Bus,"Most frequent bus operator name for this route, from the source CSV.",670,4.4,SRM Transports India Private Limited
+airline,Real — direct,Flight,"Top airlines serving this route (comma-separated), from the source CSV.",15155,99.6,"Vistara, Air India, Air_India"
+train_name,Real — direct (mixed),Train,Sample train name(s). One row (Amritsar-Mumbai) is the real Golden Temple Mail; the rest are synthetic schedule names — see source_confidence.,11015,72.4,AGR-AHM EXPRESS
+hotel_name,Real — direct,Hotel,Hotel name from the source listing.,14909,98.0,Hotel NAT GRAND REGENCY
+duration_min,Real — direct,"Bus, Train, Flight, Activity",Average travel duration in minutes (transport) or visit duration (activity). Null for Hotel.,306,2.0,428.0
+departure_time,Always-null placeholder,All,"No source dataset has scheduled departure times at this aggregated-by-route granularity. Kept as a column for schema completeness / future live-schedule integration, currently 100% null.",15215,100.0,
+arrival_time,Always-null placeholder,All,"Same as departure_time — 100% null, placeholder only.",15215,100.0,
+price_min_inr,Real — direct,"Bus, Train, Flight",Minimum observed price for this route/class in the source data. Null for Hotel/Activity (only a single median price exists in those sources).,610,4.0,342.0
+price_median_inr,Real — direct,All,Median observed price (transport) or listed price (hotel/activity).,0,0.0,656.0
+price_max_inr,Real — direct,"Bus, Train, Flight","Maximum observed price. Null for Hotel/Activity, same reason as price_min_inr.",610,4.0,656.0
+availability,Always-null placeholder,All,"Always the literal string UNKNOWN_NO_LIVE_INVENTORY — no source has real-time inventory. Explicit placeholder, not a measured 'sold out' vs 'available' signal.",0,0.0,UNKNOWN_NO_LIVE_INVENTORY
+seats_available,Always-null placeholder,All,100% null — no source has seat-level inventory.,15215,100.0,
+rooms_available,Always-null placeholder,All,100% null — no source has room-level inventory.,15215,100.0,
+travel_class,Real — direct,"Bus, Train, Flight","Bus type (e.g. Volvo AC) or fare class (Sleeper/3A/2A/1A, Economy/Business).",610,4.0,Volvo
+room_type,Structural placeholder,Hotel,Literal 'Standard (unspecified in source)' — the hotel dataset has no room-type field.,14909,98.0,Standard (unspecified in source)
+cancellation_policy,Always-null placeholder,All,No free-text policy exists in any source; use cancellation_tier + refund_percent_* instead.,15215,100.0,
+cancellation_tier,Real — direct,All,"Flexible / Standard / Basic-Restrictive, assigned per-row from the source dataset's pricing band or (Hotel) directly from the source.",0,0.0,Standard
+refund_percent_best_case,Real + derived,All,"Best-case refund % for this cancellation_tier, joined from the real cancellation-policy table (modeled on the Himachal itinerary's actual printed policy).",0,0.0,75
+refund_percent_worst_case,Real + derived,All,"Worst-case refund % for the same tier — e.g. Flexible ranges 90-100%, Basic-Restrictive ranges 0-25%.",0,0.0,50
+common_disruption_types,Engineered — reference,All,"Which of the 12 travel_disruption_scenarios.csv categories typically affect this booking_type. A static mapping, not derived per-row.",0,0.0,"BUS_DELAY, BUS_CANCELLED, TRANSFER_FAILED, WEATHER_DISRUPTION"
+delay_tolerance_min,Engineered — heuristic,All,"Assumed buffer (minutes) this mode can absorb before a delay becomes a missed connection. Per-mode constant (Flight=180, Train=120, Bus=90, Hotel=60, Activity=30), not measured.",0,0.0,90
+connection_risk_score,Engineered — heuristic,All,"0-100 baseline disruption-proneness by mode (Bus=40 highest, Hotel=10 lowest). A prior, not a per-route measurement — same value repeats within a mode.",0,0.0,40
+latitude,Real + derived (partial),"Bus, Train, Flight","Origin coordinates, only for the ~35 cities in the static hub table.",8768,57.6,27.1767
+longitude,Real + derived (partial),"Bus, Train, Flight","Origin coordinates, same coverage limit as latitude.",8768,57.6,78.0081
+destination_lat,Real + derived (partial),All,"Destination coordinates, same coverage limit.",8750,57.5,13.0827
+destination_lng,Real + derived (partial),All,"Destination coordinates, same coverage limit.",8750,57.5,80.2707
+rating,Real — direct,"Hotel, Activity",Google rating from the source listing.,14605,96.0,5.0
+amenities,Real — direct,Hotel,Comma-separated amenities list from the source listing.,14909,98.0,"Breakfast, Free Wi-Fi, Free parking, Air conditioning, Bar, Restaurant, Room service, Full-service laundry, Accessible"
+price_per_night_inr,Real — direct,Hotel,"Same value as price_median_inr for Hotel rows, kept as a named field for clarity in hotel-specific tooling.",14909,98.0,2912.0
+activity_type,Real — direct,Activity,"Attraction category (Religious Site, Museum, etc) from the source listing.",14911,98.0,Religious Site
+time_needed_hrs,Real — direct,Activity,"Typical visit duration in hours, from the source listing.",14911,98.0,1.5
+entrance_fee_inr,Real — direct,Activity,Entrance fee from the source listing (0 for free sites).,14911,98.0,0.0
+best_time_to_visit,Real — direct,Activity,"Recommended time of day, from the source listing.",14911,98.0,All
+alternative_available,Real + derived,"Bus, Train, Flight","True if the same city pair (direction-insensitive) has more than one transport mode in this dataset — computed by cross-checking the full table, not a source field.",610,4.0,False
+recovery_priority,Engineered — heuristic,All,"High/Medium/Low, a static per-mode default (Flight/Train=High since costlier to rebook, Hotel/Activity=Low) — not computed from itinerary context.",0,0.0,Medium
+source_confidence,Real — derived label,All,High-Verified / Medium-Verified / Low-DistanceEstimate / Low-Synthetic / Medium-Snapshot — summarizes how trustworthy THIS row's price/schedule is. See dataset_README.md for the exact rule per mode.,0,0.0,Low-DistanceEstimate
+cost_score,Engineered — computed,"Bus, Train, Flight, Hotel, Activity","0-100, min-max normalized against price_median_inr WITHIN the same booking_type (and class, for Train/Flight). Cheapest in its group scores 100. Relative to this dataset only, not an absolute scale.",0,0.0,84.0
+time_score,Engineered — computed,"Bus, Train, Flight","0-100, min-max normalized against duration_avg_min within booking_type. Fastest scores 100. Null for Hotel/Activity (no duration to compare).",610,4.0,84.9
+convenience_score,Engineered — heuristic,All,"0-100 per-mode constant (Flight=85 highest, Bus=50 lowest) — a prior about typical rider convenience, not measured per booking.",0,0.0,50
+risk_score,Engineered — heuristic,All,Currently identical to connection_risk_score — kept as a separate column because the recovery engine's ranking formula expects a risk_score field distinct from the raw connection-risk prior; the two are set equal at this build stage.,0,0.0,40
+eco_score,Engineered — heuristic,"Bus, Train, Flight","0-100, higher = lower emissions, from fixed per-mode CO2 factors (Bus=85, Train=90, Flight=20). Null for Hotel/Activity (no standard per-stay emissions factor used here).",610,4.0,85.0
+source_dataset,Provenance,All,Which raw uploaded file this row traces back to.,0,0.0,Pan-India_Bus_Routes.csv
+data_verified,Provenance,All,"Boolean — True only where the row's price/schedule was checked against a real listing (e.g. HRTC fares, Golden Temple Mail), not just present in a scraped dataset.",0,0.0,False
+data_year,Provenance,All,Known or estimated vintage of the underlying data. 'Unknown'/'synthetic' where the source didn't specify a date.,0,0.0,2026 (HRTC-verified rows) / unknown (rest)

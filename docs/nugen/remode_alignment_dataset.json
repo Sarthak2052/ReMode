@@ -1,0 +1,22 @@
+[
+  {
+    "instruction": "Evaluate a 150-minute weather delay on Flight 6E-512 from Mumbai (BOM) to Delhi (DEL) and generate the optimal recovery strategy.",
+    "input": "Mode: FLIGHT, Corridor: BOM->DEL, Delay: 150m, Downstream: Connecting Flight 6E-204 to BLR with 60m buffer, Weather: 65 mm/h rain, 60 km/h wind.",
+    "output": "### Disruption Assessment\n- Status: CANCELLED / MISSED_CONNECTION\n- Connection Impact: The 150-minute delay completely wipes out the 60-minute connection buffer (net deficit: -90m). Connecting Flight 6E-204 to Bengaluru is broken.\n\n### DGCA Passenger Rights & Refund\n- Under DGCA CAR Section 3, Series M, Part IV, delay exceeds 2 hours. Traveler is legally entitled to a 100% full refund without cancellation fees or free rebooking on the next available flight.\n\n### Recommended Recovery Strategy\n1. Reroute via Direct Flight BOM->BLR (e.g. AI-804 departing 18:30), bypassing the broken Delhi transit node entirely.\n2. Claim full refund for the un-flown BOM-DEL-BLR ticket.\n3. Protect downstream Oberoi Bengaluru hotel check-in by updating arrival ETA to 20:15."
+  },
+  {
+    "instruction": "Explain how RecoveryEngine's 13-factor scoring selects between an express cab and a Vande Bharat train when a flight to Jaipur is cancelled.",
+    "input": "Disrupted Item: Flight AI-491 (DEL->JAI), Reason: Runway waterlogging at IGI Airport, Alternatives: Delhi-Mumbai Expressway Cab vs Vande Bharat Express 20978.",
+    "output": "RecoveryEngine evaluates the 13-factor matrix:\n1. Schedule Cushion: Vande Bharat arrives at 19:00 (Buffer: 75m, Risk: LOW). Expressway Cab arrives at 19:45 (Buffer: 30m, Risk: MODERATE due to highway rain).\n2. Cost Delta: Vande Bharat Executive CC is ₹1,420 (offset by ₹3,800 airline refund = net savings ₹2,380). Cab is ₹4,200 (net cost +₹400).\n3. Critical Event Feasibility: Both protect the evening Dinner Keynote, but Vande Bharat scores higher on Provider Reliability (99.2%) and Luggage Ease.\nOutcome: Ranked Plan 1 is Vande Bharat Rail Bypass."
+  },
+  {
+    "instruction": "What are the passenger compensation entitlements when a train is delayed by more than 3 hours due to rail waterlogging?",
+    "input": "Transport: Indian Railways, Event: Track waterlogging >100mm over rail flange, Delay: 210 minutes.",
+    "output": "Under Indian Railways Passenger Charter and IRCTC TDR filing rules:\n1. 100% full refund of the ticket fare without any clerkage or cancellation charge deduction when train delay exceeds 3 hours and passenger chooses not to travel.\n2. In cases of official service cancellation due to submerged tracks, automated full refund is credited back to the source payment method without requiring a manual TDR filing.\n3. If passenger travels up to an intermediate station where track is blocked, proportionate refund for the untraveled distance is provided by the station master."
+  },
+  {
+    "instruction": "How does the Digital Twin simulate cascading ripple effects on an itinerary without mutating real booking rows?",
+    "input": "Simulation Input: { bookingId: 'flight-101', rainfallMm: 55, tempC: 26, stormDurationHrs: 2.5 }",
+    "output": "The Digital Twin achieves zero-mutation simulation via in-memory state cloning:\n1. Clones the active TripGraph into an isolated heap snapshot (JSON.parse(JSON.stringify(trip))).\n2. Traverses the 'dependsOn' directed acyclic graph to calculate schedule drift and buffer erosion for each dependent leg.\n3. Flags affected nodes with 'simulatedStatus' (CANCELLED, MISSED, AT_RISK) and calculates remaining buffer minutes.\n4. Returns the simulated impact telemetry directly to the UI sandbox while the persistent TripStore and database remain 100% untouched."
+  }
+]

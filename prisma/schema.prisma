@@ -1,0 +1,121 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String         @id @default(cuid())
+  email            String         @unique
+  name             String
+  phone            String?
+  homeAirport      String?        @default("BOM")
+  currency         String         @default("INR")
+  priorityWeights  Json?          // e.g. { costWeight: 0.3, timeWeight: 0.5, convenienceWeight: 0.2 }
+  avoidNightTravel Boolean        @default(false)
+  carrierLoyalty   String[]       @default([])
+  loyaltyPrograms  Json?          // e.g. { "IndiGo": "6E-12345", "Air India": "AI-98765", "Taj": "TIC-449" }
+  trips            Trip[]
+  notifications    Notification[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model Trip {
+  id            String          @id @default(cuid())
+  userId        String
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String
+  source        String?
+  destination   String
+  startDate     DateTime
+  endDate       DateTime
+  status        String          @default("PLANNED") // PLANNED, ACTIVE, DISRUPTED, RECOVERED, COMPLETED
+  items         ItineraryItem[]
+  disruptions   Disruption[]
+  recoveryPlans RecoveryPlan[]
+  history       TripHistory[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model ItineraryItem {
+  id                 String   @id @default(cuid())
+  tripId             String
+  trip               Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  type               String   
+  provider           String   
+  referenceNumber    String?
+  source             String
+  destination        String
+  departureTime      DateTime
+  arrivalTime        DateTime
+  cost               Float
+  currency           String   @default("INR")
+  status             String   @default("CONFIRMED") // CONFIRMED, DELAYED, CANCELLED, AT_RISK, REBOOKED
+  dependsOn          String[] 
+  cancellationPolicy Json?    
+  metadata           Json?    
+}
+
+model Disruption {
+  id              String   @id @default(cuid())
+  tripId          String
+  trip            Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  itemId          String   
+  type            String   
+  severity        String   
+  source          String   
+  delayMinutes    Int      @default(0)
+  description     String
+  impactedItemIds String[] 
+  status          String   @default("ACTIVE") // ACTIVE, RESOLVED, DISMISSED
+  detectedAt      DateTime @default(now())
+}
+
+model RecoveryPlan {
+  id               String    @id @default(cuid())
+  tripId           String
+  trip             Trip      @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  disruptionId     String
+  tier             String    
+  title            String
+  description      String
+  costDelta        Float
+  timeDeltaMinutes Int
+  riskScore        Float
+  convenienceScore Float
+  tripPreservation Float
+  explanation      String    
+  actions          Json      
+  status           String    @default("PROPOSED") // PROPOSED, APPLIED, REJECTED
+  appliedAt        DateTime?
+  createdAt        DateTime  @default(now())
+}
+
+model TripHistory {
+  id        String   @id @default(cuid())
+  tripId    String
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  action    String   // e.g. "TRIP_CREATED", "DISRUPTION_INJECTED", "PLAN_APPLIED", "TRIP_RESET"
+  details   String?  // Human readable summary
+  items     Json     // Snapshot of itinerary items at this point in time
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tripId    String?
+  type      String   // DISRUPTION_ALERT, COMPENSATION_CLAIM, REBOOKING_CONFIRMED, BUFFER_EROSION
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  metadata  Json?
+  createdAt DateTime @default(now())
+}

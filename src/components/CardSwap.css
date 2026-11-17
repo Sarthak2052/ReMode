@@ -1,0 +1,71 @@
+.card-swap-container {
+  position: absolute;
+  top: 52%;
+  right: 0;
+  transform: translateY(-50%);
+  transform-origin: center right;
+
+  perspective: 900px;
+  overflow: visible;
+  touch-action: none;
+}
+
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 20px;
+  border: 2px solid rgba(15, 27, 43, 0.1);
+  background: #FFFFFF;
+
+  transform-style: preserve-3d;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  cursor: grab;
+  user-select: none;
+  box-shadow: 0 24px 48px -12px rgba(10, 61, 115, 0.16), 0 8px 20px -6px rgba(10, 61, 115, 0.08), 0 0 0 1px rgba(28, 111, 217, 0.06);
+}
+
+.card:active {
+  cursor: grabbing;
+}
+
+@media (max-width: 1200px) {
+  .card-swap-container {
+    right: 0;
+    top: 52%;
+    transform: scale(0.9) translateY(-50%);
+    transform-origin: center right;
+  }
+}
+
+@media (max-width: 1024px) {
+  .card-swap-container {
+    left: 50%;
+    right: auto;
+    top: 50%;
+    transform: scale(0.85) translate(-50%, -50%);
+    transform-origin: center center;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-swap-container {
+    left: 50%;
+    right: auto;
+    top: 50%;
+    transform: scale(0.72) translate(-50%, -50%);
+    transform-origin: center center;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-swap-container {
+    left: 50%;
+    right: auto;
+    top: 48%;
+    transform: scale(0.58) translate(-50%, -50%);
+    transform-origin: center center;
+  }
+}

@@ -1,0 +1,47 @@
+# REMODE SYSTEM DOMAIN RULES: WEATHER-DRIVEN TRANSIT DISRUPTIONS
+
+## 1. AVIATION (FLIGHTS)
+* CRITICAL RISK: If wind speed is >= 70 km/h, OR rainfall is >= 45 mm/hr, OR visibility is < 500m, OR condition is "Thunderstorm". 
+  * Impact: Severe crosswinds or low visibility trigger mandatory ground holds.
+  * Delay: Minimum 120 minutes.
+  * System Status: CANCELLED or SEVERELY DELAYED.
+* HIGH RISK: If wind speed is >= 50 km/h, OR rainfall is >= 25 mm/hr, OR visibility is < 1200m.
+  * Impact: Strong gusts and heavy downpour require CAT-II approach procedures. Air traffic flow management delays active.
+  * Delay: Minimum 60 minutes.
+* MODERATE RISK: If wind speed is >= 35 km/h, OR rainfall is >= 10 mm/hr, OR visibility is < 3000m.
+  * Impact: Apron and pushback operation delays.
+  * Delay: Minimum 25 minutes.
+
+## 2. RAILWAYS (TRAINS)
+* CRITICAL RISK: If rainfall is >= 60 mm/hr.
+  * Impact: Waterlogging over rail level (>100mm). Track signals fail-safe clamped red.
+  * Delay: Minimum 150 minutes.
+  * System Status: CANCELLED or SEVERELY DELAYED.
+* HIGH RISK (Monsoon): If rainfall is >= 30 mm/hr.
+  * Impact: Track submerged above rail flange. Indian Railways mandates 15-25 km/h caution order.
+  * Delay: Minimum 75 minutes.
+* HIGH RISK (Heatwave): If temperature is >= 46°C.
+  * Impact: Extreme rail ambient temperature induces track buckling risk. Overhead Equipment (OHE) sag limits speed.
+  * Delay: Minimum 45 minutes.
+* MODERATE RISK (Fog): If visibility is < 400m.
+  * Impact: Dense fog. FOG-PASS signaling active with 60 km/h ceiling.
+  * Delay: Minimum 45 minutes.
+* MODERATE RISK (Rain/Wind): If rainfall is >= 12 mm/hr OR wind speed is >= 55 km/h.
+  * Impact: Minor signal checking delays.
+  * Delay: Minimum 20 minutes.
+
+## 3. ROADWAYS (CABS, BUSES, TRANSFERS)
+* CRITICAL RISK: If rainfall is >= 50 mm/hr OR wind speed is >= 75 km/h.
+  * Impact: Flash flooding, arterial gridlock, and expressway waterlogging.
+  * Delay: Minimum 90 minutes.
+* HIGH RISK: If rainfall is >= 25 mm/hr OR visibility is < 600m.
+  * Impact: Hydroplaning hazards on highways. Traffic speed halved. Reduced braking distance.
+  * Delay: Minimum 50 minutes.
+* MODERATE RISK: If rainfall is >= 10 mm/hr OR visibility is < 1500m.
+  * Impact: Urban rain congestion and reduced transit speed.
+  * Delay: Minimum 25 minutes.
+
+## 4. CASCADING CONNECTION RULES
+* If any transit node arrives less than 30 minutes before the next departure, the connection is broken.
+* The system status for the subsequent node must be marked as "MISSED_CONNECTION".
+* If an initial leg is delayed, that delay (in minutes) is passed forward to the departure time of the next leg.
